@@ -6,6 +6,8 @@
     <style>
       body {
         background-color: green;
+        margin: 0;
+        padding: 0;
       }
     </style>
   </head>
@@ -20,6 +22,16 @@
       function preload() {
         soundFormat("mp3");
         boing = loadSound("boing.mp3");
+      }
+      
+      function setup() {
+        createCanvas(w,h);
+      }
+      
+      function draw() {
+        if (keyIsDown(32)) {
+          boing.play();
+        }
       }
     </script>
     <h1>asdf</h1>
