@@ -69,13 +69,13 @@
           this.update = function() {
             this.x = mouseX;
             this.y = mouseY;
-            ellipse(x, y, size, size);
+            ellipse(this.x, this.y, size, size);
           }
         } else {
           this.update = function() {
             this.x = random(0, 100);
             this.y = random(0, 100);
-            ellipse(x, y, size, size);
+            ellipse(this.x, this.y, size, size);
           }
           this.checkCollide = function(obj) {
             //if obj.position = this.position {score++}
