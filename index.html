@@ -10,6 +10,9 @@
         overflow: hidden;
         background-color: pink;
       }
+      body:hover {
+        cursor: crosshair;
+      }
     </style>
   </head>
 
@@ -18,25 +21,26 @@
       var w = window.innerWidth;
       var h = window.innerHeight;
       
-      var boing;
-      var fireball;
+      //var boing;
+      //var fireball;
       
-      function preload() {
-        soundFormats("mp3");
-        boing = loadSound("boing.mp3");
-      }
+      //function preload() {
+        //soundFormats("mp3");
+        //boing = loadSound("boing.mp3");
+      //}
       
       function setup() {
-        createCanvas(w,h);
-        fireball = loadImage("fireball.png");
+        //createCanvas(w,h);
+        //fireball = loadImage("fireball.png");
       }
       
       function draw() {
         clear();
-        image(fireball, mouseX, mouseY, 100, 60);
-        if (keyIsDown(32)) {
-          boing.play();
-        }
+        //image(fireball, mouseX, mouseY, 100, 60);
+        //if (keyIsDown(32)) {
+          //boing.play();
+        //}
+        
       }
     </script>
     <h1>asdfl;sjdlkfgjlkasdjflajljdkjfdkfja;lksdjflksjfdlk;jsflkasdf</h1>
