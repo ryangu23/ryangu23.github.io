@@ -14,9 +14,6 @@
       body:hover {
         cursor: none;
       }
-      canvas {
-        margin: auto;
-      }
     </style>
   </head>
 
@@ -27,7 +24,7 @@
       let pose;
       
       function setup() {
-        createCanvas(640, 480);
+        createCanvas(window.innerWidth, window.innerHeight);
         background('pink');
         video = createCapture(VIDEO);
         video.hide();
