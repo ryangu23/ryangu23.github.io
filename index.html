@@ -27,7 +27,7 @@
         createCanvas(640, 480);
         background('pink');
         video = createCapture(VIDEO);
-        video.hide;
+        video.hide();
         poseNet = ml5.poseNet(video, modelLoaded);
         poseNet.on("pose", gotPoses);
       }
