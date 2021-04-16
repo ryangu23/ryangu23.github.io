@@ -11,9 +11,6 @@
         overflow: hidden;
         background-color: pink;
       }
-      body:hover {
-        cursor: none;
-      }
     </style>
   </head>
 
@@ -43,7 +40,7 @@
       }
       
       function draw() {
-        image(video, window.innerWidth/4, window.innerHeight/6, 800, 600);
+        image(video, window.innerWidth/4, window.innerHeight/6);
         
         if (pose) {
           fill(255, 0, 0);
