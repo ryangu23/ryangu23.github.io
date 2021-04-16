@@ -19,68 +19,40 @@
 
   <body>
     <script>
-      var w = window.innerWidth;
-      var h = window.innerHeight;
-      
-      var mouse;
-      var target;
-      
-      var score;
-      
-      //var boing;
-      //var fireball;
-      
-      //function preload() {
-        //soundFormats("mp3");
-        //boing = loadSound("boing.mp3");
-      //}
+      let video;
+      let poseNet;
+      let pose;
       
       function setup() {
-        createCanvas(w,h);
-        //fireball = loadImage("fireball.png");
-        
-        mouse = new circle(0, 0, 20, false);
-        target = new circle(w/2, h/2, 20, true);
-        
-        score = 0;
+        createCanvas(640, 480);
+        background('pink');
+        video = createCapture(VIDEO);
+        video.hide;
+        poseNet = ml5.poseNet(video, modelLoaded);
+        poseNet.on("pose", gotPoses);
+      }
+      
+      function gotPoses(poses) {
+        if (poses.length > 0) {
+          pose = poses[0].pose;
+        }
+      }
+      
+      function modelLoaded() {
+        console.log("poseNet ready");
       }
       
       function draw() {
-        fill("blue");
-        //clear();
-        //image(fireball, mouseX, mouseY, 100, 60);
-        //if (keyIsDown(32)) {
-          //boing.play();
-        //}
-        mouse.update();
-        target.update();
+        image(video, 0, 0);
         
-        if (target.checkCollide(mouse)) {
-          score += 100;
+        if (pose) {
+          fill(255, 0, 0);
+          ellipse(pose.nose.x, pose.nose.y - 50, 30);
         }
       }
       
-      function circle(x, y, size, target) {
-        this.x = x;
-        this.y = y;
-        this.size = size;
-        
-        if (!target) {
-          this.update = function() {
-            this.x = mouseX;
-            this.y = mouseY;
-            ellipse(this.x, this.y, this.size, this.size);
-          }
-        } else {
-          this.update = function() {
-            this.x = random(0, 100);
-            this.y = random(0, 100);
-            ellipse(this.x, this.y, this.size, this.size);
-          }
-          this.checkCollide = function(obj) {
-            //if obj.position = this.position {score++}
-          }
-        }
+      function entity() {
+        //nothing for now
       }
     </script>
     <h1>asdfl;sjdlkfgjlkasdjflajljdkjfdkfja;lksdjflksjfdlk;jsflkasdf</h1>
