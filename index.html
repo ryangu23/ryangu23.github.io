@@ -25,6 +25,7 @@
       let elapsed;
       
       let hs;
+      let newP;
 
       let width = window.innerWidth;
       let height = window.innerHeight;
@@ -46,6 +47,8 @@
         rend = 0;
         time = 30;
         elapsed = 0;
+        
+        newP = true;
       }
 
       function gotPoses(poses) {
@@ -72,13 +75,11 @@
         }
         
         background("pink");
-        if (video.loadedmetadata) {
+        if (!newP) {
+          if (video.loadedmetadata) {
           //image(video, 0, 0, width, width * video.height/video.width);
-          image(video, 0, 0)
-          elapsed = rend/120;
-    
-          text("Score: " + score + ". Time Left: " + Math.floor(time-elapsed), 20, 30);
-          text("High Score: " + hs, 20, video.height + 30);
+          image(video, 0, 0);
+          elapsed = rend/120; //if only i knew about delayTime
   
           if (pose) {
             nosedot.update();
@@ -97,9 +98,26 @@
           } else {
             rend += 2;
           }
+    
+          if (score > hs) {
+            hs = score;
+            storeItem("hs", hs);
+          }
+    
+          text("Score: " + score + ". Time Left: " + Math.floor(time-elapsed), 20, 30);
+          text("High Score: " + hs, 20, video.height + 30);
+    
+          } else {
+            fill("blue");
+            text("Turn on camera to play!", 100, 100);
+          }
         } else {
-          fill("blue");
-          text("Turn on camera to play!", 100, 100);
+          fill("green");
+          text("Match the GREEN dot on your nose to the RED target. Press SPACE to play.", 100, 100, video.width - 20);
+    
+          if (keyIsDown(32)) {
+            newP = false;
+          }
         }
       }
 
