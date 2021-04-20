@@ -1,56 +1,134 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.min.js"></script>
     <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5.collide2d"></script>
-    
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: pink;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
   </head>
-
   <body>
+    <script src="sketch.js"></script>
     <script>
       let video;
       let poseNet;
       let pose;
-      
-      function setup() {
-        createCanvas(window.innerWidth, window.innerHeight);
-        background('pink');
+
+      let nosedot;
+      let target;
+
+      let score;
+      let rend;
+
+      let time;
+      let elapsed;
+
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+
+      function setup(){
+        createCanvas(width, height);
         video = createCapture(VIDEO);
         video.hide();
         poseNet = ml5.poseNet(video, modelLoaded);
-        poseNet.on("pose", gotPoses);
+        poseNet.on('pose', gotPoses);
+  
+        textSize(30);
+        textStyle(BOLD);
+  
+        nosedot = new entity(0, 0, 20, false);
+        target = new entity(100, 100, 200, true);
+  
+        score = 0;
+        rend = 0;
+        time = 30;
+        elapsed = 0;
       }
-      
+
       function gotPoses(poses) {
+        //console.log(poses)
         if (poses.length > 0) {
           pose = poses[0].pose;
         }
       }
-      
+
       function modelLoaded() {
-        //nothing
+        console.log('ready');
       }
-      
-      function draw() {
-        clear();
-        image(video, (window.innerHeight - 800)/2, window.innerHeight/6, 800, 600);
-        
-        if (pose) {
-          fill(255, 0, 0);
-          ellipse(pose.nose.x, pose.nose.y - 50, 30);
+
+      function draw(){
+        background("pink");
+        if (video.loadedmetadata) {
+          //image(video, 0, 0, width, width * video.height/video.width);
+          image(video, 0, 0)
+          elapsed = rend/120;
+    
+          text("Score: " + score + ". Time Left: " + Math.floor(time-elapsed), 20, 30);
+  
+          if (pose) {
+            nosedot.update();
+            target.update();
+          }
+  
+          if (target.collide(nosedot)) {
+            clear();
+            target.scored();
+            score++;
+          }
+  
+          if (time-elapsed <= 0) {
+            text("Score: " + score + ". Press R to Restart", 100, 100);
+            noLoop();
+          } else {
+            rend += 2;
+          }
+        } else {
+          fill("blue");
+          text("Turn on camera to play!", 100, 100);
         }
       }
-      
-      function entity() {
-        //nothing for now
+
+      function keyPressed() {
+        if (keyIsDown(82)) {
+          clear();
+          nosedot = new entity(0, 0, 20, false);
+          target = new entity(100, 100, 200, true);
+    
+          score = 0;
+          rend = 0;
+          time = 30;
+          elapsed = 0;
+          loop();
+        }
+      }
+
+      function entity(x, y, s, enm) {
+        this.x = x;
+        this.y = y;
+        this.s = s;
+  
+        if (!enm) {
+          this.update = function() {
+            fill('green');
+            this.x = pose.nose.x;
+            this.y = pose.nose.y;
+            ellipse(this.x, this.y, this.s);
+          }
+        } else {
+          this.update = function() {
+            fill('red');
+            ellipse(this.x, this.y, this.s);
+          }
+          this.scored = function() {
+            this.x = random(0, 640);
+            this.y = random(0, 480);
+          }
+        }
+  
+        this.collide = function(obj) {
+          return collideCircleCircle(this.x, this.y, this.s, obj.x, obj.y, obj.s);
+        }
       }
     </script>
   </body>
