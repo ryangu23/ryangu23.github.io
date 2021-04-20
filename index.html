@@ -121,10 +121,6 @@
         } else {
           fill("green");
           text("Match the GREEN dot on your nose to the RED target. Press SPACE to play.", 100, 100, video.width - 20);
-    
-          if (keyIsDown(32)) {
-            newP = false;
-          }
         }
       }
 
@@ -139,6 +135,12 @@
           time = 30;
           elapsed = 0;
           loop();
+        }
+      }
+      
+      function mousePressed() {
+        if (newP) {
+          newP = false;
         }
       }
 
