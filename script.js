@@ -1,18 +1,4 @@
-let video;
-let poseNet;
-let pose;
-
-let nosedot;
-let target;
-
-let score;
-let rend;
-
-let start;
-
-let time;
-
-let hs;
+let video, poseNet, pose, nosedot, target, score, rend, start, time, hs;
 
 var promptInd = [[], []];
 
@@ -64,7 +50,7 @@ function draw() {
   //if camera not available
   if (!video.loadedmetadata) {
     fill("red");
-    drawText("This game requires camera access. You will not be recorded whatsoever.", 15, (width-video.width)/2, 5, video.width);
+    drawText("This game requires camera access. You will not be recorded nor will the video feed be saved whatsoever.", 15, (width-video.width)/2, 5, video.width);
     return;
   }
   
@@ -78,7 +64,7 @@ function draw() {
         drawText(promptInd[i][1], 15, (width-video.width)/2, gif.height + 5, video.width);
       }
       if (promptInd[i][2] && promptInd[i][2] == "[GIF]") {
-        gif.position((width - video.width)/2, 5);
+        gif.position((width - gif.width)/2, 5);
         gif.show()
       }
       return;
@@ -91,13 +77,15 @@ function draw() {
     start = true;
   }
   
-  //if time <= 0 stop the game
-  if (!time) {
-    noLoop();
-  }
-  
   //game loop
   game();
+  
+  //if time <= 0 stop the game
+  if (!time) {
+    drawText("Score: " + score + ".", 50, 0, video.height/2);
+    drawText("SPACEBAR TO RESTART", 50, 0, video.height/2 + 50)
+    noLoop();
+  }
   
   //draw text to user interface
   drawText("Score: " + score, 50, 0, video.height);
@@ -228,5 +216,7 @@ function game() {
 function drawText(txt, size, x, y) {
   //fill("red");
   textSize(size);
+  
+  //this is wrong but it works somehow
   text(txt, 0, y + 50, video.x);
 }
