@@ -8,8 +8,9 @@ let target;
 let score;
 let rend;
 
+let start;
+
 let time;
-let elapsed;
 
 let hs;
 
@@ -20,6 +21,7 @@ let x = 15;
 let width = window.innerWidth;
 let height = window.innerHeight;
 
+//load tutorial gif for use in project
 function preload() {
   gif = createImg("opt_gif.gif", "tutorial_gif");
   gif.hide();
@@ -37,16 +39,21 @@ function setup() {
   
   textSize(30);
   textStyle(BOLD);
+  textAlign(CENTER);
+  
+  //rectMode(CENTER);
   
   nosedot = new entity(0, 0, 20, false);
   target = new entity(width/2, 100, 200, true);
   
   score = 0;
-  time = int(second());
-  elapsed = 0;
+  time = 30;
+  
+  start = false;
   
   hs = new highscore();
   
+  //tutorial index
   promptInd = [[true, "A GREEN dot will follow your nose. Match this dot to the RED target to score points. Click to continue."], [true, "Press SPACEBAR at anytime to restart the game. Click to continue."], [true, "Click to continue.", "[GIF]"]];
 }
 
@@ -54,8 +61,8 @@ function draw() {
   
   background("black");
   
+  //if camera not available
   if (!video.loadedmetadata) {
-    //turn on camera
     fill("red");
     drawText("This game requires camera access. You will not be recorded whatsoever.", 15, (width-video.width)/2, 5, video.width);
     return;
@@ -78,26 +85,41 @@ function draw() {
     }
   }
   
+  //start counting down
+  if (!start) {
+    setInterval(elapsed, 1000);
+    start = true;
+  }
+  
+  //if time <= 0 stop the game
+  if (!time) {
+    noLoop();
+  }
+  
+  //game loop
   game();
   
-  console.log("score is: " + score);
-  console.log("high score is: " + hs.highscore);
+  //draw text to user interface
+  drawText("Score: " + score, 50, 0, video.height);
+  drawText("High Score: " + hs.highscore, 50, 0, video.height+50);
+  drawText("Time Left: " + time, 50, 0, video.height+100);
 }
 
 function keyPressed() {
+  //restart if SPACEBAR is pressed
   if (keyIsDown(32)) {
     clear();
     nosedot = new entity(0, 0, 20, false);
     target = new entity(width/2, 100, 200, true);
     
     score = 0;
-    time = int(second());
-    elapsed = 0;
+    time = 30;
     
     loop();
   }
 }
 
+//entity class
 class entity {
   constructor(x, y, s, enm) {
     this.x = x;
@@ -128,6 +150,7 @@ class entity {
   }
 }
 
+//highscore class
 class highscore {
   constructor() {
     let z = int(getItem("hs"));
@@ -144,20 +167,26 @@ class highscore {
   }
 }
 
+//callback for ml5 poseNet
 function gotPoses(poses) {
   if (poses.length > 0) {
     pose = poses[0].pose;
   }
 }
 
+//callback for ml5 poseNet
 function modelLoaded() {
   console.log('ready');
 }
 
-function getElapsed(time) {
-  //figure out time function
+//decrement time when function is called
+function elapsed() {
+  if (time > 0) {
+    time--;
+  }
 }
 
+//if tutorial is active, progress in slides
 function mousePressed() {
   //for tutorial prompts
   for (let i = 0; i < promptInd.length; i++) {
@@ -174,6 +203,7 @@ function mousePressed() {
   }
 }
 
+//main game loop
 function game() {
   background("pink");
   image(video, (width-video.width)/2, 5);
@@ -194,8 +224,9 @@ function game() {
   }
 }
 
+//custom text drawing function
 function drawText(txt, size, x, y) {
-  //fill("white");
+  //fill("red");
   textSize(size);
-  text(txt, x, y + 50, video.x);
+  text(txt, 0, y + 50, video.x);
 }
